@@ -1,0 +1,7 @@
+https://github.com/VicSera/Kode
+
+Kode
+
+Symbol table
+- implemented using 30 buckets and a hash function that maps any string to one of the 30 buckets
+- the positions used by the ST are composed of a bucket number and the position within the specified bucket
