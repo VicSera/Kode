@@ -5,3 +5,14 @@ Kode
 Symbol table
 - implemented using 30 buckets and a hash function that maps any string to one of the 30 buckets
 - the positions used by the ST are composed of a bucket number and the position within the specified bucket
+
+PIF
+- alias for a mutable list of pairs of (token, position), where a token is a string and a position is
+    a pair of (bucket, rank) denoting the bucket withing the ST hash table and the rank withing the said bucket
+
+Scanner
+- operations:
+    - scan a file and provide a pair of (SymbolTable, PIF) as output
+- implementation:
+    - initialized with a token file
+        - special case: separators, which are then used for tokenizing each line of the input program

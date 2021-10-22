@@ -1,0 +1,4 @@
++ - * / ^
+< > <= >= == !=
+[ ] { } ( ) : -> < >
+if else while funk char bool int program input output mut imm borrow pack
