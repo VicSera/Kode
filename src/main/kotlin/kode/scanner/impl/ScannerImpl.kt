@@ -2,10 +2,13 @@ package kode.scanner.impl
 
 import kode.scanner.Scanner
 import kode.scanner.ScannerOutput
+import kode.scanner.tokenClassifier.TokenClassifier
 import java.io.File
-import java.util.regex.Pattern
 
-class ScannerImpl(tokenFile: File): Scanner {
+class ScannerImpl(
+    tokenFile: File,
+    private val tokenClassifier: TokenClassifier
+): Scanner {
     lateinit var tokens: Set<String>
         private set
     lateinit var separators: Set<String>
@@ -32,12 +35,21 @@ class ScannerImpl(tokenFile: File): Scanner {
 
     override fun scan(file: File): ScannerOutput {
         file.forEachLine { line ->
-            tokenize(line)
+            val tokens = tokenize(line)
+            println(tokens)
         }
         throw NotImplementedError()
     }
 
     private fun tokenize(line: String): List<String> {
-        throw NotImplementedError()
+        val anySeparator = tokens.map { Regex.escape(it) }.reduce { acc, token ->
+            if (acc.isEmpty())
+                token
+            else
+                "$acc|$token"
+        }
+        val alphanumericStringWithSomeSymbols = "[a-zA-Z0-9_\"]+"
+
+        return "$alphanumericStringWithSomeSymbols|$anySeparator".toRegex().findAll(line).toList().map { it.value }
     }
 }
