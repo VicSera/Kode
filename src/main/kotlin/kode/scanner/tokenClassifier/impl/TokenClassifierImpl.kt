@@ -7,8 +7,8 @@ import kode.util.toRegexStringWithOr
 
 class TokenClassifierImpl(private val tokens: Set<String>): TokenClassifier {
     override fun classify(token: String): TokenClass? {
-        return if (isStandalone(token))
-            TokenClass.STANDALONE
+        return if (isPredefined(token))
+            TokenClass.PREDEFINED
         else if (isConstant(token))
             TokenClass.CONSTANT
         else if (isIdentifier(token))
@@ -25,7 +25,7 @@ class TokenClassifierImpl(private val tokens: Set<String>): TokenClassifier {
         return isInteger(token) || isChar(token) || isString(token) || isReal(token)
     }
 
-    private fun isStandalone(token: String): Boolean {
+    private fun isPredefined(token: String): Boolean {
         return tokens.regexEscaped().toRegexStringWithOr().toRegex().matches(token)
     }
 

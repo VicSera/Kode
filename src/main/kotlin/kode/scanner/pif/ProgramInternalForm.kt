@@ -19,10 +19,12 @@ val PifEntry.stPos
     get() = second
 
 fun ProgramInternalForm.print() {
+    val maxLength = this.maxByOrNull { it.token.length }?.token?.length!!
+
     println("PIF:")
-    println("Token | (Bucket: Rank)")
+    println("${"Token".padEnd(maxLength, ' ')} | (Bucket: Rank)")
     println("----------------------")
     this.forEach { entry ->
-        println("${entry.token} | (${entry.stPos.bucket}, ${entry.stPos.rank})")
+        println("${entry.token.padEnd(maxLength, ' ')} | (${entry.stPos.bucket}, ${entry.stPos.rank})")
     }
 }

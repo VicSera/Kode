@@ -44,8 +44,8 @@ class SymbolTableImpl: SymbolTable {
         println("ST:")
         buckets.forEachIndexed { index, bucket ->
             if (bucket.isNotEmpty()) {
-                val formattedBucket = bucket.mapIndexed { rank, symbol -> "($rank, $symbol)" }.reduce{ acc, str -> "$acc, $str" }
-                println("Bucket: $index: $formattedBucket")
+                println("Bucket $index:")
+                bucket.forEachIndexed { rank, token -> println("\t$rank: $token") }
             }
         }
     }

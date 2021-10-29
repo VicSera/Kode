@@ -2,6 +2,7 @@ package kode.scanner.impl
 
 import kode.scanner.Scanner
 import kode.scanner.ScannerOutput
+import kode.scanner.exception.ScannerException
 import kode.scanner.pif.PifEntry
 import kode.scanner.pif.ProgramInternalForm
 import kode.scanner.pif.SymbolTablePosition
@@ -36,9 +37,10 @@ class ScannerImpl(
 
             tokens.forEach { token ->
                 when (tokenClassifier.classify(token)) {
-                    TokenClass.STANDALONE -> pif.add(PifEntry(token, emptyPosition()))
+                    TokenClass.PREDEFINED -> pif.add(PifEntry(token, emptyPosition()))
                     TokenClass.CONSTANT -> addToPifAndSt(token, "constant", pif, st)
                     TokenClass.IDENTIFIER -> addToPifAndSt(token, "identifier", pif, st)
+                    null -> throw ScannerException("Token $token is not a known token, constant or identifier")
                 }
             }
         }
@@ -53,19 +55,20 @@ class ScannerImpl(
     }
 
     private fun tokenize(line: String): List<String> {
-        val anySeparator = tokens.map {
+        val anyPredefinedToken = tokens.map {
             when(it) {
-                "-" -> "-(?!>)"
                 "=" -> "=(?!=)"
                 "<" -> "<(?!=)"
                 ">" -> ">(?!=)"
                 "!" -> "!(?!=)"
+                "+" -> "[+](?![0-9])"
+                "-" -> "-(?!>)"
                 else -> Regex.escape(it)
             }
         }.toRegexStringWithOr()
-        val alphanumericStringWithSomeSymbols = "[a-zA-Z0-9_\"]+"
+        val alphanumericStringWithSymbols = "[a-zA-Z0-9_\"'.+-]+"
 
-        return "$alphanumericStringWithSomeSymbols|$anySeparator".toRegex().findAll(line).toList().map { it.value }
+        return "$alphanumericStringWithSymbols|$anyPredefinedToken".toRegex().findAll(line).toList().map { it.value }
     }
 
     private fun initTokens(tokenFile: File) {
