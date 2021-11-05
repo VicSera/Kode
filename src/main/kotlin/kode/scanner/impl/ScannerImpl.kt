@@ -55,20 +55,13 @@ class ScannerImpl(
     }
 
     private fun tokenize(line: String): List<String> {
-        val anyPredefinedToken = tokens.map {
-            when(it) {
-                "=" -> "=(?!=)"
-                "<" -> "<(?!=)"
-                ">" -> ">(?!=)"
-                "!" -> "!(?!=)"
-                "+" -> "[+](?![0-9])"
-                "-" -> "-(?!>)"
-                else -> Regex.escape(it)
-            }
-        }.toRegexStringWithOr()
-        val alphanumericStringWithSymbols = "[a-zA-Z0-9_\"'.+-]+"
+        val anyPredefinedToken = tokens
+            .sortedByDescending { it.length }
+            .map { Regex.escape(it) }
+            .toRegexStringWithOr()
+        val alphanumericStringWithSymbols = "[a-zA-Z0-9_\"'.]+"
 
-        return "$alphanumericStringWithSymbols|$anyPredefinedToken".toRegex().findAll(line).toList().map { it.value }
+        return "$anyPredefinedToken|$alphanumericStringWithSymbols".toRegex().findAll(line).toList().map { it.value }
     }
 
     private fun initTokens(tokenFile: File) {
